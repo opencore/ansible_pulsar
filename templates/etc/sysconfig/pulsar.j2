@@ -1,0 +1,43 @@
+# Environment variables for pulsar
+
+# Log4j configuration file (default /opt/pulsar/conf/log4j2.yaml)
+PULSAR_LOG_CONF={{ PULSAR_CONFIG_DIR }}/log4j2.yam
+
+# Configuration file for broker (default: /opt/pulsar/conf/broker.conf)
+PULSAR_BROKER_CONF={{ PULSAR_CONFIG_DIR }}/broker.conf
+
+# Configuration file for bookie (default: /opt/pulsar/conf/bookkeeper.conf)
+#PULSAR_BOOKKEEPER_CONF={{ PULSAR_CONFIG_DIR }}/bookkeeper.conf
+
+# Configuration file for zookeeper (default: /opt/pulsar/conf/zookeeper.conf)
+#PULSAR_ZK_CONF={{ PULSAR_CONFIG_DIR }}/zookeeper.conf
+
+# Configuration file for global configuration store (default: /opt/pulsar/conf/global_zookeeper.conf)
+#PULSAR_CONFIGURATION_STORE_CONF={{ PULSAR_CONFIG_DIR }}/global_zookeeper.conf
+
+# Configuration file for discovery service (default: /opt/pulsar/conf/discovery.conf)
+#PULSAR_DISCOVERY_CONF={{ PULSAR_CONFIG_DIR }}/discovery.conf
+
+# Configuration file for websocket proxy (default: /opt/pulsar/conf/websocket.conf)
+#PULSAR_WEBSOCKET_CONF={{ PULSAR_CONFIG_DIR }}/websocket.conf
+
+# Configuration file for Pulsar proxy (default: /opt/pulsar/conf/proxy.conf)
+#PULSAR_PROXY_CONF={{ PULSAR_CONFIG_DIR }}/proxy.conf
+
+# Configuration file for functions worker (default: /opt/pulsar/conf/functions_worker.yml)
+PULSAR_WORKER_CONF={{ PULSAR_CONFIG_DIR }}/functions_worker.yml
+
+# Configuration file for standalone (default: /opt/pulsar/conf/standalone.conf)
+#PULSAR_STANDALONE_CONF={{ PULSAR_CONFIG_DIR }}/standalone.conf
+
+# Extra options to be passed to the jvm
+#PULSAR_EXTRA_OPTS=
+
+# Add extra paths to the pulsar classpath
+#PULSAR_EXTRA_CLASSPATH=
+
+# Folder where the pulsar server PID file should be stored
+#PULSAR_PID_DIR=
+
+# Wait time before forcefully kill the pulsar server instance, if the stop is not successful
+#PULSAR_STOP_TIMEOUT=

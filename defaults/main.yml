@@ -1,0 +1,32 @@
+---
+# defaults file for ansible_pulsar
+
+# Version of Pulsar to install
+PULSAR_VERSION: 2.1.0
+
+# Baseurl for mirror to download from
+PULSAR_LINK: https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=incubator/pulsar/pulsar-{{ PULSAR_VERSION }}-incubating/apache-pulsar-{{ PULSAR_VERSION }}-incubating-bin.tar.gz
+
+# Path to install pulsar under
+# role will automatically create a symlink for the most current version here and untar all versions here as well
+PACKAGE_BASE: /opt
+
+PULSAR_HOME: /opt/pulsar
+
+# Path to keep pulsar config in
+PULSAR_CONFIG_DIR: /etc/pulsar
+
+# Path for pulsar data
+PULSAR_DATA_DIR: /var/pulsar
+
+# Path to write logs in
+PULSAR_LOG_DIR: /var/log/pulsar
+
+# User to run pulsar as, this will also be used as groupname
+PULSAR_USER: pulsar
+
+PULSAR_FILENAME: apache-pulsar-{{ PULSAR_VERSION }}-incubating
+
+CLUSTER_NAME: opencore
+
+ENABLE_FUNCTIONS_WORKER: true

@@ -1,0 +1,87 @@
+---
+# Purpose: Download and install pulsar on all master servers
+#
+- name: Install necessary packages
+  yum: name={{ item }} update_cache=yes state=present
+  when: ansible_os_family == 'RedHat'
+  with_items:
+    - libselinux-python
+
+- name: Create group pulsar
+  group:
+    name: "{{ PULSAR_USER }}"
+    state: present
+
+- name: Create user for pulsar
+  user:
+    name: "{{ PULSAR_USER }}"
+    state: present
+    group: pulsar
+
+- name: Create directories & set ownership
+  file:
+    path: "{{ item }}"
+    owner: "{{ PULSAR_USER }}"
+    group: "{{ PULSAR_USER }}"
+    mode: 0755
+    recurse: yes
+    state: directory
+  with_items:
+    - "{{ PULSAR_CONFIG_DIR }}"
+    - "{{ PULSAR_LOG_DIR }}"
+    - "{{ PULSAR_DATA_DIR }}"
+
+- name: Download Pulsar
+  get_url:
+    url: "{{ PULSAR_LINK }}"
+    dest: "/tmp/apache-pulsar-{{ PULSAR_VERSION }}-incubating-bin.tar.gz"
+    mode: 0644
+
+- name: Untar Pulsar
+  unarchive:
+    src: /tmp/apache-pulsar-{{ PULSAR_VERSION }}-incubating-bin.tar.gz
+    dest: "{{ PACKAGE_BASE }}"
+    owner: "{{ PULSAR_USER }}"
+    group: "{{ PULSAR_USER }}"
+    copy: no
+    creates: "{{ PACKAGE_BASE }}/{{ PULSAR_FILENAME }}"
+
+- name: Symlink Pulsar
+  file:
+    src: "{{ PACKAGE_BASE }}/{{ PULSAR_FILENAME }}"
+    path: "{{ PULSAR_HOME }}"
+    owner: "{{ PULSAR_USER }}"
+    group: "{{ PULSAR_USER }}"
+    state: link
+
+- name: Put Pulsar configuration in place
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ PULSAR_USER }}"
+    group: "{{ PULSAR_USER }}"
+    mode: 0644
+  with_items:
+    - { src: "etc/pulsar/broker.conf.j2", dest: "{{ PULSAR_CONFIG_DIR }}/broker.conf" }
+    - { src: "etc/pulsar/log4j2.yaml.j2", dest: "{{ PULSAR_CONFIG_DIR }}/log4j2.yaml" }
+    - { src: "etc/pulsar/functions_worker.yml.j2", dest: "{{ PULSAR_CONFIG_DIR }}/functions_worker.yml" }
+  notify: restart pulsar
+
+- name: Template Systemd files
+  template: src={{ item.src }} dest={{ item.dest }} owner=root group=root mode={{ item.mode }} backup=yes
+  with_items:
+    - {src: "etc/sysconfig/pulsar.j2" , dest: "/etc/sysconfig/pulsar", mode: "0755"}
+    - {src: "lib/systemd/system/pulsar.service.j2" , dest: "/lib/systemd/system/pulsar.service", mode: "0644"}
+  notify: reload systemd
+
+- name: Write cluster metadata (only on first run, unless forced)
+  shell: "{{ lookup('template', 'metadata.sh.j2') | replace('\n', ' ') }} > {{ PULSAR_CONFIG_DIR }}/metadata.create"
+  args:
+    creates: "{{ PULSAR_CONFIG_DIR }}/metadata.create"
+  when: ansible_hostname == groups['cluster'][0]
+
+#- name: Start pulsar
+#  service:
+#    name: pulsar
+#    state: started
+#    enabled: yes

@@ -1,0 +1,14 @@
+[Unit]
+Description=Apache Pulsar
+Before=
+After=network.target
+
+[Service]
+User={{ PULSAR_USER }}
+ExecStart={{ PULSAR_HOME }}/bin/pulsar broker
+Restart=on-abort
+StandardOutput=journal+console
+EnvironmentFile=/etc/sysconfig/pulsar
+
+[Install]
+WantedBy=multi-user.target

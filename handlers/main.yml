@@ -1,0 +1,9 @@
+---
+# handlers file for ansible_pulsar
+- name: restart pulsar
+  service: name=pulsar state=restarted
+
+- name: reload systemd
+  command: systemctl daemon-reload
+  become: true
+  notify: restart pulsar

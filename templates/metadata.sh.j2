@@ -1,0 +1,6 @@
+{{ PULSAR_HOME }}/bin/pulsar initialize-cluster-metadata
+--cluster {{ CLUSTER_NAME }}
+--zookeeper {{ groups['zookeeper'] | map('regex_replace', '$', ':2181') | join(',') }}
+--configuration-store {{ groups['zookeeper'] | map('regex_replace', '$', ':2181') | join(',') }}
+--web-service-url http://{{ ansible_fqdn }}:8080
+--broker-service-url pulsar://{{ ansible_fqdn }}:6650
